@@ -27,17 +27,21 @@ const registerUser = async (req, res) => {
 
   const avatarURL = gravatar.url(email);
 
+  const payload = { id: nanoid() };
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
     verificationToken,
+    token,
   });
 
   await sendVerifyEmail(email, verificationToken);
 
   res.status(201).json({
-    user: { email: newUser.email },
+    user: { email: newUser.email, token },
   });
 };
 
@@ -91,13 +95,13 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email }).exec();
 
-  if (!user) {
-    throw HttpError(401, "Email or password is wrong");
-  }
+  // if (!user) {
+  //   throw HttpError(401, "Email or password is wrong");
+  // }
 
-  if (!user.verify) {
-    throw HttpError(401, "Email not verified");
-  }
+  // if (!user.verify) {
+  //   throw HttpError(401, "Email not verified");
+  // }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
 
