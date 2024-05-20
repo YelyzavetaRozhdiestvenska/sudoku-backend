@@ -37,7 +37,7 @@ const registerUser = async (req, res) => {
   await sendVerifyEmail(email, verificationToken);
 
   res.status(201).json({
-    user: { email: newUser.email, subscription: newUser.subscription },
+    user: { email: newUser.email },
   });
 };
 
@@ -95,9 +95,9 @@ const loginUser = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  if(!user.verify) {
+  if (!user.verify) {
     throw HttpError(401, "Email not verified");
-}
+  }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
 
@@ -133,34 +133,13 @@ const logoutUser = async (req, res) => {
 export const logout = ctrlWrapper(logoutUser);
 
 const getCurrentUser = async (req, res) => {
-  const { email, subscription } = req.user;
+  const { email } = req.user;
 
   res.status(200).json({
     email,
-    subscription,
   });
 };
 export const getCurrent = ctrlWrapper(getCurrentUser);
-
-// update user's Subscription
-
-const updateSubscription = async (req, res, next) => {
-  const { _id: user } = req.user;
-
-  const userSubscription = await User.findByIdAndUpdate(user, req.body, {
-    new: true,
-  });
-
-  if (!userSubscription) return next();
-
-  const { email, subscription } = userSubscription;
-
-  res.status(200).json({
-    email,
-    subscription,
-  });
-};
-export const subscriprion = ctrlWrapper(updateSubscription);
 
 // update user's Avatar
 

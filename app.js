@@ -2,7 +2,6 @@ import express, { json } from "express";
 import logger from "morgan";
 import cors from "cors";
 import "dotenv/config";
-import contactsRouter from "./routes/contactsRouter.js";
 import userRouter from "./routes/auth.js";
 
 const app = express();
@@ -13,7 +12,6 @@ app.use(cors());
 app.use(json());
 app.use(express.static("public"));
 
-app.use("/api/contacts", contactsRouter);
 app.use("/api/users", userRouter);
 
 app.use((_, res) => {

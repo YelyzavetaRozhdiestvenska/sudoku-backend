@@ -6,16 +6,10 @@ import {
   login,
   logout,
   getCurrent,
-  subscriprion,
   updateAvatar,
 } from "../controllers/userControllers.js";
 import validateBody from "../helpers/validateBody.js";
-import {
-  registerSchema,
-  loginSchema,
-  subscriprionSchema,
-  userEmailSchema,
-} from "../models/userModel.js";
+import { registerSchema, loginSchema, userEmailSchema } from "../models/userModel.js";
 import { authenticate } from "../helpers/authenticate.js";
 import { upload } from "../helpers/upload.js";
 
@@ -44,10 +38,6 @@ userRouter.post("/logout", authenticate, logout);
 // check current user if token is available
 
 userRouter.get("/current", authenticate, getCurrent);
-
-// update subscription
-
-userRouter.patch("/", authenticate, validateBody(subscriprionSchema), subscriprion);
 
 // update avatar
 
