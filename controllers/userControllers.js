@@ -27,18 +27,19 @@ const registerUser = async (req, res) => {
 
   const avatarURL = gravatar.url(email);
 
-  const payload = { id: nanoid() };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
-
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
     verificationToken,
-    token,
   });
 
-  await sendVerifyEmail(email, verificationToken);
+  const payload = { id: newUser._id };
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+
+  // await sendVerifyEmail(email, verificationToken);
+
+  await User.findByIdAndUpdate(newUser._id, { token });
 
   res.status(201).json({
     user: { email: newUser.email, token },
@@ -119,7 +120,7 @@ const loginUser = async (req, res) => {
 
   res.status(200).json({
     token,
-    user: { email: user.email, subscription: user.subscription },
+    user: { email: user.email },
   });
 };
 

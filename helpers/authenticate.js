@@ -21,6 +21,7 @@ export const authenticate = async (req, res, next) => {
     req.user = user;
     next();
   } catch {
+    console.log("ERROR !!! >>>>>>");
     next(HttpError(401, "Not authorized"));
   }
 };
